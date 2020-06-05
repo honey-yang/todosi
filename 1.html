@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css">
+    <style>
+        *{
+        padding: 0 ;
+        margin: 0;
+    }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <h1>代办事项</h1>
+        </div>
+        <div class="middle">
+            <div :class="['middle-left',{active:allclicked}]" @click="allclick">
+                >
+            </div>
+            <div class="middle-right" >
+                <input type="text" placeholder="你想要月入百万吗？" 
+                v-focus
+                v-model="inputVal" 
+                @keyup.enter="saveMsg"
+                @input="showlist"
+                @blur="losefocus"
+                >
+                <ul :class="['hidden',{show:inputsecound}]">
+                    <li v-for="item,index in smallMessage" @click.stop="addmore(item)">{{item}}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="item-list" v-for="item,index in filtermessage">
+            <input type="checkbox" class="item-list-left" v-model="item.completed">
+            <div :class="['item-list-right',{completed:item.completed},{hidden:edit_index==index}]" 
+            @dblclick="changeValue(index)" >
+            {{item.content}}
+            </div>
+            <input :class="['item-list-right2','hidden',{show:edit_index==index}]" 
+            v-model="item.content" @keyup.enter="saveEditTodo(index)" 
+            @keyup.esc="cancelEditTodo(index)"
+            @blur="saveEditTodo(index)">
+            <div class="item-list-lastright" @click="diandiandian(index)">X</div>
+            
+        </div>
+        <div class="bottom">
+            <div class="bottom-left">剩下{{remain.length}}项</div>
+            <div class="bottom-middle">
+                <a href="#/all" :class="['bottom-middle-all',{activity:visibility =='all'}]">All</a>
+                <a href="#/active" :class="['bottom-middle-active',{activity:visibility =='active'}]">激活</a>
+                <a href="#/achieve" :class="['bottom-middle-achieve',{activity:visibility =='achieve'}]" @click="clearMsg">完成</a>
+            </div>
+            <div class="bottom-right" @click.stop="clearMsg">清除已完成</div>
+        </div>
+    </div>
+    <script src="https://cn.vuejs.org/js/vue.js"></script>
+    <!-- <script src="https://cn.vuejs.org/js/vue.js"></script> -->
+
+    <script>
+        let storageKey = "mymessage"
+        srotageFunc ={
+            //获取数据
+            fetch:function(){
+                return JSON.parse(localStorage.getItem(storageKey) || '[]');
+            },
+            save:function(message){
+                localStorage.setItem(storageKey,JSON.stringify(message))
+            }
+        }
+
+        let vm = new Vue({
+            el:".app",
+            watch:{
+                message:{
+                    handler:function(message){
+                        srotageFunc.save(message)
+                    }
+                },
+                deep:true
+            },
+            data:{
+                inputVal:"", //输入框的值
+                allclicked:false,
+                edit_index:-1,
+                content_cache:"",
+                visibility:"all",
+                inputsecound:false,
+                message:srotageFunc.fetch()
+                
+            },
+            directives:{
+                "focus":{
+                    inserted:function(el,binding){
+                        el.focus()
+                    }
+                }
+            },
+            computed: {
+                remain:function(){
+                    let remainmsg = this.message.filter(function(v,i){
+                        return v.completed == false
+                    })
+                    return remainmsg
+                },
+                filtermessage:function(){
+                    if(this.visibility == "all"){
+                        return this.message
+                    }else if(this.visibility == "acitive"){
+                        return filtermessage = this.message.filter(function(v,i){
+                            return !v.completed   //激活选项 过滤掉completed是真的选项 !v.completed  ==true
+                        })
+
+                    }else{
+                        return filtermessage = this.message.filter(function(v,i){
+                            return v.completed
+                        })
+                    }
+                },
+                smallMessage:function(){
+                    let smallMessage = []
+                    this.message.forEach(function(v,i){
+                        if(v.content.indexOf(this.inputVal!= -1)){
+                            smallMessage.push(v.content)
+                        }
+                    })
+                    return smallMessage
+                }
+            },
+            methods: {
+                saveMsg:function(){
+                        if(this.inputVal===""){
+                            alert("啥也没你叫我怎么搞")
+                            return
+                        }
+                        this.message.push({
+                            id:Date.now,
+                            content:this.inputVal,
+                            completed:false
+                        })
+                        this.inputVal = ""
+                    },
+                    allclick:function(){
+                        this.message.forEach((v,i) => {
+                            v.completed = !v.completed
+                            this.allclicked = !this.allclicked
+                        });
+                    },
+                    changeValue:function(index){
+                        this.edit_index = index  //记录待编辑的项
+                        console.log(this.edit_index)
+                        this.content_cache =  this.message[index].content
+                    },
+                    saveEditTodo:function(index){
+                        if(this.message[index].content == ''){
+                            this.message.splice(index,1)
+                        }
+                        this.edit_index = -1
+                    },
+                    cancelEditTodo:function(index){
+                        this.message[index].content = this.content_cache  //将当前data的content
+                        this.content_cache = "";// 清空编辑 内容的缓存 
+                        this.edit_index = -1;//取消编辑
+                    },
+                    clearMsg:function(){
+                        //先筛选出已完成的项
+                        let cmpitem = this.message.filter(function(v,i){
+                            return v.completed == false
+                        })
+                        this.message = cmpitem
+                    },
+                    diandiandian:function(index){
+                        this.message.splice(index,1)
+                    },
+                    showlist:function(){
+                        this.inputsecound = true
+                    },
+                    losefocus:function(){
+                        this.inputsecound = false
+                    },
+                    addmore:function(item){
+                        this.message.push({
+                            id:Date.now(),
+                            content:item,
+                            completed:false
+                        })
+                        this.inputsecound = false
+                    }
+                },
+
+        })
+        //检测hash 的变化
+         window.addEventListener("hashchange",function(){
+            // console.log(window.location.hash)
+            // console.log("你搞什么")
+            vm.visibility = window.location.hash.replace("#/","")
+         })
+        vm.visibility = "all"
+    </script>
+</body>
+</html>

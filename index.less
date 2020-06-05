@@ -1,0 +1,129 @@
+.app {
+    width: 50%;
+    margin: 0 auto;
+    background-color: rgb(204, 227, 236);
+    .hidden{
+        display: none;
+    }
+    .show{
+        display: block;
+    }
+    .header {
+        text-align: center;
+      h1 {
+        color: pink;
+        
+      }
+    }
+  
+    div.middle {
+        display: flex;
+        width: 100%;
+        height: 50px;
+      div.middle-left {
+        flex: 1;
+        transform: rotate(90deg);
+        line-height: 50px;
+        text-align: center;
+        font-size: 25px;
+        color: green;
+      }
+      .active{
+        background-color: red;
+      }
+  
+      div.middle-right {
+          flex: 9;
+        input {
+            height: 50px;
+            width: 99%;
+            box-sizing: border-box;
+        }
+        ul{
+          list-style: none;
+        }
+        ul li{
+          box-sizing: border-box;
+          border: 1px solid red;
+          width: 100%;
+          height: 30px;
+          background-color: orange;
+          position: relative;
+          z-index: 1000;
+        }
+      }
+    }
+  
+    .item-list {
+        display: flex;
+        width: 100%;
+        height: 50px;
+        // display: none;
+      .item-list-left {
+        flex: 1;
+        height: 20px;
+        border-radius: 50%;
+        margin-top: 12px;
+
+      }
+  
+      .item-list-right {
+        flex: 8;
+        left: 45px;
+        width: 100%;
+        line-height: 50px;
+        border: 1px solid grey;
+        box-sizing: border-box;
+      }
+      .completed{
+          color: red;
+          text-decoration: line-through;
+      }
+      .item-list-right2{
+        flex: 8;
+        
+        width: 100%;
+        line-height: 50px;
+        border: 1px solid grey;
+        box-sizing: border-box;
+      }
+      .item-list-lastright{
+        flex: 1;
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+      }
+    }
+  
+    .bottom {
+        display: flex;
+      .bottom-left {
+        flex: 33.33%;
+      }
+  
+      .bottom-middle {
+        flex: 33.33%;
+          display: flex;
+        .bottom-middle-all {
+            margin-left: 10px;
+        }
+  
+        .bottom-middle-active {
+            margin-left: 10px;
+        }
+  
+        .bottom-middle-achieve {
+            margin-left: 10px;
+        }
+        .activity{
+          border: 1px solid cyan;
+        }
+      }
+  
+      .bottom-right {
+        flex: 33.33%;
+        text-align: right;
+      }
+    }
+  }
