@@ -192,6 +192,10 @@
                 },
 
         })
+        
+        let routes = [
+            {path:"all"},{path:"active"},{path:"achieve"}
+        ]
         //初次加载时路由的初始化
         function handleHashChange(){
             //清空hash
@@ -203,14 +207,21 @@
             // console.log(window.location.hash)
             // console.log("你搞什么")
             let visibility = window.location.hash.replace("#/","")
-            if(!visibility){
+            
+            // vm.visibility = window.location.hash.replace("#/","")
+            let index = routes.findIndex(function(v,i){
+                if(v.path === visibility){
+                    return true
+                }
+            })
+            if(index === -1){
                 vm.visibility = "all"
             }else{
                 vm.visibility = visibility
             }
-            // vm.visibility = window.location.hash.replace("#/","")
+            
          })
-        // vm.visibility = "all"
+        vm.visibility = "all"
         handleHashChange()
     </script>
 </body>
