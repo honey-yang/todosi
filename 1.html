@@ -192,6 +192,12 @@
                 },
 
         })
+        //初次加载时路由的初始化
+        function handleHashChange(){
+            //清空hash
+            window.location.hash = ""
+            vm.visibility = "all"
+        }
         //检测hash 的变化
          window.addEventListener("hashchange",function(){
             // console.log(window.location.hash)
