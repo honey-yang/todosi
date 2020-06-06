@@ -195,16 +195,23 @@
         //初次加载时路由的初始化
         function handleHashChange(){
             //清空hash
-            window.location.hash = ""
+            window.location.hash = "" //初次加载的hash值为空
             vm.visibility = "all"
         }
         //检测hash 的变化
          window.addEventListener("hashchange",function(){
             // console.log(window.location.hash)
             // console.log("你搞什么")
-            vm.visibility = window.location.hash.replace("#/","")
+            let visibility = window.location.hash.replace("#/","")
+            if(!visibility){
+                vm.visibility = "all"
+            }else{
+                vm.visibility = visibility
+            }
+            // vm.visibility = window.location.hash.replace("#/","")
          })
-        vm.visibility = "all"
+        // vm.visibility = "all"
+        handleHashChange()
     </script>
 </body>
 </html>
